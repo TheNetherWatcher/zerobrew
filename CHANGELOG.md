@@ -7,12 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- `zb man --out-dir <dir>` writes zerobrew's man pages, generated from its command-line definition: `zb.1` and a `zb-<subcommand>.1` for each subcommand. The installer writes them to `share/man/man1` beside the directory it installs `zb` into, or to `ZEROBREW_MAN_DIR`, so `man zb` works after installing. A failure there is a warning, not a failed install ([#349](https://github.com/zerobrewhq/zerobrew/issues/349), [#466](https://github.com/zerobrewhq/zerobrew/pull/466))
+
 ### Changed
 - Re-measure the README and site benchmarks on 0.4.2, wired at ~436 Mbit/s: 7.8x faster cold and 25x faster warm over 100 packages, median 7.5x cold. The in-process CA bundle is most of the change from 3.6x: ca-certificates and everything depending on it went from under 2x to 10x and more. The run and its log are under `results/2026-10-23`, with a ~80 Mbit/s run from two days earlier beside it
 - The Homebrew tap is `zerobrewhq/tap`: `brew install zerobrewhq/tap/zerobrew`. The repository was renamed from `homebrew-zerobrew`, so taps of `zerobrewhq/zerobrew` and `cachebag/zerobrew` keep updating through GitHub's redirect
 
 ### Fixed
-- Running `zb` with no arguments now shows the help when `ZEROBREW_ROOT` or `ZEROBREW_AUTO_INIT` is set, as it is after `zb init`, instead of a missing-subcommand error ([#357](https://github.com/zerobrewhq/zerobrew/issues/357))
+- Running `zb` with no arguments now shows the help when `ZEROBREW_ROOT` or `ZEROBREW_AUTO_INIT` is set, as it is after `zb init`, instead of a missing-subcommand error ([#357](https://github.com/zerobrewhq/zerobrew/issues/357), [#479](https://github.com/zerobrewhq/zerobrew/pull/479))
+- `zb doctor` no longer reports packages built from source as stale store refs that are `not on disk`, and `zb doctor --repair` no longer fails to clear them. A source build goes straight into the Cellar, so it has no store entry to find. Refcount mismatches on source builds are still reported and repaired ([#483](https://github.com/zerobrewhq/zerobrew/issues/483), [#484](https://github.com/zerobrewhq/zerobrew/pull/484))
+
+### Security
+- Update `zstd` to 0.14.3, with `zstd-safe` 8.2.0 and `zstd-sys` 2.1.2, for RUSTSEC-2026-0391, 0398, 0403 and 0410. zerobrew only uses the streaming decoder, on bottles and sources it has checksummed ([#485](https://github.com/zerobrewhq/zerobrew/pull/485))
 
 ## [0.4.2] - 2026-10-21
 
